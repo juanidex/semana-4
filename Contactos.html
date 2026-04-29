@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulario de Contacto con WhatsApp</title>
+    <style>
+        /* Estilos básicos para mejor apariencia */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        h1 {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .formulario {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: rgb(105, 100, 100);
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        fieldset {
+            border: none;
+            padding: 30px;
+        }
+
+        legend {
+            font-size: 1.3em;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #25d36570;
+            width: 100%;
+        }
+
+        .contenedor-campos {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .campo {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .campo label {
+            font-weight: bold;
+            color: #555;
+            font-size: 0.9em;
+        }
+
+        .input-text {
+            padding: 12px;
+            border: 2px solid #323f63;
+            border-radius: 8px;
+            font-size: 1em;
+            transition: all 0.3s;
+        }
+
+        .input-text:focus {
+            outline: none;
+            border-color: #25D366;
+            box-shadow: 0 0 8px rgba(37, 211, 102, 0.3);
+        }
+
+        textarea.input-text {
+            resize: vertical;
+            min-height: 100px;
+            font-family: inherit;
+        }
+
+        .botones-container {
+            display: flex;
+            gap: 15px;
+            justify-content: flex-end;
+            flex-wrap: wrap;
+        }
+
+        .boton {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1em;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: bold;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .boton-enviar {
+            background-color: #007bff;
+            color: white;
+        }
+
+        .boton-enviar:hover {
+            background-color: #0056b3;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,123,255,0.3);
+        }
+
+        .boton-whatsapp {
+            background-color: #25D366;
+            color: white;
+        }
+
+        .boton-whatsapp:hover {
+            background-color: #128C7E;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(37,211,102,0.3);
+        }
+
+        .w-sm-100 {
+            width: auto;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .formulario {
+                margin: 0 10px;
+            }
+            
+            fieldset {
+                padding: 20px;
+            }
+
+            .botones-container {
+                flex-direction: column;
+            }
+            
+            .boton {
+                width: 100%;
+                justify-content: center;
+            }
+            
+            .w-sm-100 {
+                width: 100%;
+            }
+        }
+
+        /* Mensaje flotante */
+        .mensaje-flotante {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 20px;
+            border-radius: 10px;
+            color: white;
+            font-weight: bold;
+            z-index: 1000;
+            animation: slideIn 0.3s ease-out;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .mensaje-exito {
+            background: linear-gradient(135deg, #11998e, #38ef7d);
+        }
+
+        .mensaje-error {
+            background: linear-gradient(135deg, #eb3349, #f45c43);
+        }
+
+        .mensaje-whatsapp {
+            background: linear-gradient(135deg, #128C7E, #25D366);
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        
+        .whatsapp-icon {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='white'%3E%3Cpath d='M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-5.45-4.45-9.9-9.91-9.9zm-.04 2.5c4.1 0 7.41 3.32 7.41 7.41 0 4.1-3.32 7.41-7.41 7.41-1.43 0-2.81-.41-4.01-1.17l-.71-.42-3.12.82.83-3.04-.45-.73c-.85-1.25-1.3-2.69-1.3-4.17 0-4.09 3.32-7.41 7.41-7.41z'/%3E%3Cpath d='M16.8 13.79c-.26-.13-1.55-.76-1.79-.85-.24-.09-.42-.13-.6.13-.18.26-.71.85-.87 1.02-.16.18-.32.2-.59.07-.26-.13-1.11-.41-2.12-1.31-.78-.7-1.31-1.56-1.46-1.82-.16-.26-.02-.4.12-.53.12-.12.27-.31.41-.47.14-.16.18-.27.27-.45.09-.18.05-.34-.03-.48-.07-.13-.6-1.44-.82-1.97-.21-.52-.43-.45-.59-.46-.15-.01-.33-.01-.5-.01-.18 0-.46.07-.7.32-.24.26-.92.9-.92 2.19 0 1.29.94 2.54 1.07 2.71.13.18 1.84 2.82 4.46 3.96.62.27 1.11.43 1.49.55.63.2 1.2.17 1.65.1.5-.07 1.55-.63 1.77-1.24.22-.61.22-1.13.15-1.24-.07-.11-.26-.18-.52-.31z'/%3E%3C/svg%3E");
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+        }
+    </style>
+</head>
+<body>
+    <h1>📱 Contactos</h1>
+    <form class="formulario" id="formularioContacto">
+        <fieldset>
+            <legend>💬 Llena todos los campos</legend>
+
+            <div class="contenedor-campos">
+                <div class="campo">
+                    <label>👤 Nombre</label>
+                    <input class="input-text" type="text" placeholder="Tu Nombre" id="nombre" required>
+                </div>
+
+                <div class="campo">
+                    <label>📞 Teléfono</label>
+                    <input class="input-text" type="tel" inputmode="numeric" pattern="[0-9]*" placeholder="Tu Teléfono" id="telefono" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+                </div>
+
+                <div class="campo">
+                    <label>✉️ Correo</label>
+                    <input class="input-text" type="email" placeholder="Tu Email" id="correo" required>
+                </div>
+
+                <div class="campo">
+                    <label>💭 Mensaje</label>
+                    <textarea class="input-text" placeholder="Escribe tu mensaje aquí..." id="mensaje" required></textarea>
+                </div>
+            </div> <!-- .contenedor-campos -->
+
+            <div class="botones-container">
+                <button type="button" class="boton boton-whatsapp" id="btnWhatsApp">
+                    <span class="whatsapp-icon"></span>
+                    WhatsApp
+                </button>
+                <button type="submit" class="boton boton-enviar">
+                    ✉️ Enviar Correo
+                </button>
+            </div>
+        </fieldset>
+    </form>
+
+    <script>
+        // Función para mostrar mensajes flotantes
+        function mostrarMensaje(mensaje, tipo) {
+            // Eliminar mensaje existente si lo hay
+            const mensajeExistente = document.querySelector('.mensaje-flotante');
+            if (mensajeExistente) {
+                mensajeExistente.remove();
+            }
+
+            // Crear nuevo mensaje
+            const mensajeDiv = document.createElement('div');
+            mensajeDiv.className = `mensaje-flotante mensaje-${tipo}`;
+            mensajeDiv.innerHTML = mensaje;
+            document.body.appendChild(mensajeDiv);
+
+            // Auto-eliminar después de 3 segundos
+            setTimeout(() => {
+                mensajeDiv.remove();
+            }, 3000);
+        }
+
+        // Función para validar el formulario
+        function validarFormulario(nombre, correo, mensaje) {
+            if (!nombre.trim()) {
+                mostrarMensaje('❌ Por favor, ingresa tu nombre', 'error');
+                return false;
+            }
+
+            if (!correo.trim()) {
+                mostrarMensaje('❌ Por favor, ingresa tu correo electrónico', 'error');
+                return false;
+            }
+
+            // Validar formato de email
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(correo)) {
+                mostrarMensaje('❌ Por favor, ingresa un correo electrónico válido', 'error');
+                return false;
+            }
+
+            if (!mensaje.trim()) {
+                mostrarMensaje('❌ Por favor, escribe un mensaje', 'error');
+                return false;
+            }
+
+            return true;
+        }
+
+        // Función para limpiar el formulario
+        function limpiarFormulario() {
+            document.getElementById('nombre').value = '';
+            document.getElementById('telefono').value = '';
+            document.getElementById('correo').value = '';
+            document.getElementById('mensaje').value = '';
+        }
+
+        // Función para enviar por WhatsApp
+        function enviarWhatsApp() {
+            // Obtener valores
+            const nombre = document.getElementById('nombre').value;
+            const telefono = document.getElementById('telefono').value;
+            const correo = document.getElementById('correo').value;
+            const mensaje = document.getElementById('mensaje').value;
+
+            // Validar formulario
+            if (!validarFormulario(nombre, correo, mensaje)) {
+                return;
+            }
+
+            // Número de WhatsApp destino (formato internacional sin +)
+            const numeroWhatsApp = '51996110690'; // Cambia este número por el que necesites
+            // Formato: código país + número sin espacios ni símbolos
+            // Ejemplo: Perú (51) 999 999 999 -> 51999999999
+
+            // Construir el mensaje para WhatsApp
+            const mensajeWhatsApp = `*Nuevo mensaje de contacto*
+
+👤 *Nombre:* ${nombre}
+📞 *Teléfono:* ${telefono || 'No especificado'}
+✉️ *Correo:* ${correo}
+
+💭 *Mensaje:*
+${mensaje}
+
+--- 
+Mensaje enviado desde el formulario de contacto
+📅 Fecha: ${new Date().toLocaleString()}`;
+
+            // Codificar el mensaje para URL
+            const mensajeCodificado = encodeURIComponent(mensajeWhatsApp);
+            
+            // Crear el enlace de WhatsApp
+            const whatsappLink = `https://wa.me/${numeroWhatsApp}?text=${mensajeCodificado}`;
+            
+            // Abrir WhatsApp en una nueva pestaña
+            window.open(whatsappLink, '_blank');
+            
+            // Mostrar mensaje de éxito
+            mostrarMensaje('✅ Abriendo WhatsApp...', 'whatsapp');
+            
+            // Preguntar si desea limpiar el formulario
+            setTimeout(() => {
+                if (confirm('¿Deseas limpiar el formulario después de enviar el mensaje?')) {
+                    limpiarFormulario();
+                }
+            }, 500);
+        }
+
+        // Función para enviar por correo
+        function enviarCorreo(e) {
+            e.preventDefault(); // Prevenir el envío tradicional del formulario
+
+            // Obtener valores
+            const nombre = document.getElementById('nombre').value;
+            const telefono = document.getElementById('telefono').value;
+            const correo = document.getElementById('correo').value;
+            const mensaje = document.getElementById('mensaje').value;
+
+            // Validar formulario
+            if (!validarFormulario(nombre, correo, mensaje)) {
+                return;
+            }
+
+            // Construir el cuerpo del correo
+            const asunto = `Contacto de ${nombre}`;
+            const cuerpo = `
+Nombre: ${nombre}
+Teléfono: ${telefono || 'No especificado'}
+Correo: ${correo}
+
+Mensaje:
+${mensaje}
+
+--- 
+Mensaje enviado desde el formulario de contacto
+Fecha: ${new Date().toLocaleString()}
+            `.trim();
+
+            // Correo destino
+            const correoDestino = '71790545@idexpasco.edu.pe';
+
+            // Crear el enlace mailto
+            const mailtoLink = `mailto:${correoDestino}?subject=${encodeURIComponent(asunto)}&body=${encodeURIComponent(cuerpo)}`;
+
+            // Intentar abrir el cliente de correo
+            try {
+                // Abrir el cliente de correo predeterminado
+                window.location.href = mailtoLink;
+                
+                // Mostrar mensaje de éxito
+                mostrarMensaje('📧 Abriendo tu cliente de correo...', 'exito');
+                
+                // Preguntar si desea limpiar el formulario
+                setTimeout(() => {
+                    if (confirm('¿Deseas limpiar el formulario después de enviar el correo?')) {
+                        limpiarFormulario();
+                    }
+                }, 1000);
+                
+            } catch (error) {
+                mostrarMensaje('❌ Error al abrir el cliente de correo', 'error');
+                console.error('Error:', error);
+            }
+        }
+
+        // Event Listeners
+        document.getElementById('btnWhatsApp').addEventListener('click', enviarWhatsApp);
+        document.getElementById('formularioContacto').addEventListener('submit', enviarCorreo);
+
+        // Validación en tiempo real para el campo de teléfono
+        const telefonoInput = document.getElementById('telefono');
+        telefonoInput.addEventListener('input', function(e) {
+            this.value = this.value.replace(/[^0-9]/g, '');
+            // Limitar longitud a 15 dígitos
+            if (this.value.length > 15) {
+                this.value = this.value.slice(0, 15);
+            }
+        });
+
+        // Validación en tiempo real para email
+        const emailInput = document.getElementById('correo');
+        emailInput.addEventListener('blur', function() {
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (this.value && !emailRegex.test(this.value)) {
+                this.style.borderColor = '#dc3545';
+                mostrarMensaje('❌ Correo electrónico no válido', 'error');
+            } else {
+                this.style.borderColor = '#e0e0e0';
+            }
+        });
+
+        emailInput.addEventListener('input', function() {
+            this.style.borderColor = '#e0e0e0';
+        });
+
+        // Efecto de animación al cargar la página
+        window.addEventListener('load', () => {
+            mostrarMensaje('💬 ¡Bienvenido! Usa WhatsApp o Correo Eletronico para contactarnos', 'exito');
+        });
+    </script>
+</body>
+</html>
